@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: E-Commerce
+  datasource:
+    username: root
+    password: Gokul@03
+    url: jdbc:mysql://localhost:3306/springsecurity1?createDatabaseIfNotExist=true
+  jpa:
+    hibernate:
+      ddl-auto: update
+server:
+  port: 8081
