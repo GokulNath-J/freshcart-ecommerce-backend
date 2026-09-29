@@ -1,9 +1,9 @@
-package com.example.E_Commerce;
+package com.example.E_Commerce.ControllerPac;
 
 
-import com.example.E_Commerce.DTO.NewAdminDTO;
-import com.example.E_Commerce.DTO.NewUserDTO;
+import com.example.E_Commerce.DTO.*;
 import com.example.E_Commerce.Entities.UserClass;
+import com.example.E_Commerce.GlobalExceptionPac.UserException;
 import com.example.E_Commerce.ServicePac.Serviceclass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,20 +15,22 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/cus")
-public class ControllerClass {
+@RequestMapping("/user")
+public class UserController {
 
     @Autowired
     private Serviceclass serviceclass;
 
-  /*  @Autowired
-    private OrderService orderService;*/
-
     @GetMapping("/welcome")
     @PreAuthorize("hasRole('USER')")
-    //@PostAuthorize("returnObject.username == authentication.name")
     public String welcomeMessage() {
         return "Welcome to the shopping";
+    }
+
+    @GetMapping("/adminTest")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String adminTest() {
+        return "Admin LoggedIn";
     }
 
     @PostMapping("/createNewuser")
@@ -43,44 +45,16 @@ public class ControllerClass {
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
-    //
+
     @GetMapping("/getAllCustomer")
     @PreAuthorize("hasAuthority('READ_PRIVILEGE')")
     public ResponseEntity<List<UserClass>> getAllCustomer() {
         return serviceclass.getAllCustomer();
     }
 
-   /* @PostMapping("/addproducts")
-    public ResponseEntity<String> addproducts(@RequestBody OrderedProduct product){
-        return serviceclass.addproducts(product);
-    }*/
-
-
-   /* @PostMapping("/placeorder/{name}/{amount}")
-    public ResponseEntity<String> placeOrder1(@PathVariable String name,@PathVariable int amount){
-       return orderService.placeOrder1(name,amount);
-    }*/
-
-/*    @GetMapping("/geterror")
-    public void geterror() throws UnknownException {
-        throw new UnknownException("Custome ExceptionHandler");
-    }
-    @GetMapping("/geterror1")
-    public void geterror1() throws ArithmeticException {
-        throw new ArithmeticException("Arithmetic ExceptionHan-dler");
-    }
-    @GetMapping("/geterror3")
-    public void geterror3() throws UnknownException {
-        throw new UnknownException("Custome ExceptionHandler");
-    }*/
-
-    /*@PostMapping("/order/{custId}/{prodId}")
-    public ResponseEntity<String> orderProduct(@PathVariable int custId,@PathVariable int prodId){
-        return serviceclass.orderProduct(custId,prodId);
-    }*/
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestParam String userID, @RequestParam String password) {
+    public ResponseEntity<String> login(@RequestParam String userID, @RequestParam String password) throws UserException {
         return serviceclass.login(userID, password);
     }
 
@@ -88,6 +62,25 @@ public class ControllerClass {
     @PostAuthorize("returnObject.body.customerName == authentication.name")
     public ResponseEntity<UserClass> testing() {
         return serviceclass.test();
+    }
+
+
+    @PostMapping("/addMoneyToWallet")
+    public ResponseEntity<String> addMoneyToWallet(@RequestBody WalletDTO walletDTO) {
+        String result = serviceclass.addMoneyToWallet(walletDTO);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PostMapping("/addSeller")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> addSeller(@RequestBody AddSellerDTO addSellerDTO) {
+        String result = serviceclass.addSeller(addSellerDTO);
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/searchProduct")
+    public ResponseEntity<List<ProductDetailsDTO>> searchProduct(@RequestParam String productName) {
+        return new ResponseEntity<>(serviceclass.searchProduct(productName), HttpStatus.FOUND);
     }
 
 //    @PostMapping("/addAdmin")

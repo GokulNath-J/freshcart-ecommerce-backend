@@ -34,14 +34,10 @@ public class SecurityClass {
         SecurityFilterChain filterChain = httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .addFilterBefore(jwtAuthfilter, UsernamePasswordAuthenticationFilter.class)
-                /*.authorizeHttpRequests(auth->auth
-                        .requestMatchers(HttpMethod.GET,"/cus/getAllCustomer").authenticated()
-                        .anyRequest().permitAll()
-                )*/
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/cus/createNewuser").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/cus/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/cus/createNewAdmin").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/user/createNewuser").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/user/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/user/createNewAdmin").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(cus -> cus
@@ -52,13 +48,6 @@ public class SecurityClass {
                 .build();
         return filterChain;
     }
-  /*  @Bean
-    public UserDetailsService userDetailsService(){
-        UserDetails userDetails1 = User.withDefaultPasswordEncoder().username("gk").password("123").build();
-        UserDetails userDetails2 = User.withDefaultPasswordEncoder().username("ggg").password("111").build();
-        InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager(userDetails1,userDetails2);
-        return inMemoryUserDetailsManager;
-    }*/
 
 
     @Bean

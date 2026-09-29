@@ -1,0 +1,14 @@
+package com.example.E_Commerce.Repos;
+
+import com.example.E_Commerce.Entities.WalletClass;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import javax.swing.text.html.Option;
+import java.util.Optional;
+
+@Repository
+public interface WalletRepo extends JpaRepository<WalletClass, Integer> {
+
+    Optional<WalletClass> findByUserId(String userId);
+}

@@ -1,10 +1,13 @@
 package com.example.E_Commerce.ServicePac;
 
 
-import com.example.E_Commerce.DTO.NewAdminDTO;
-import com.example.E_Commerce.DTO.NewUserDTO;
+import com.example.E_Commerce.DTO.*;
+import com.example.E_Commerce.Entities.ProductClass;
 import com.example.E_Commerce.Entities.UserClass;
+import com.example.E_Commerce.Entities.WalletClass;
+import com.example.E_Commerce.GlobalExceptionPac.UserException;
 import com.example.E_Commerce.Repos.UserRepo;
+import com.example.E_Commerce.Repos.WalletRepo;
 import com.example.E_Commerce.SecurityPac.JwtClass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,9 +28,6 @@ public class Serviceclass {
     @Autowired
     private UserRepo userRepo;
 
-//    @Autowired
-//    private OrderClassRepo orderClassRepo;
-
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);
 
     @Autowired
@@ -36,12 +36,11 @@ public class Serviceclass {
     @Autowired
     private JwtClass jwtClass;
 
-//    @Autowired
-//    private RolesRepo rolesRepo;
+    @Autowired
+    private WalletRepo walletRepo;
 
-
-   /* @Autowired
-    private ProductRepo productRepo;*/
+    @Autowired
+    private ProductService productService;
 
     public ResponseEntity<List<UserClass>> getAllCustomer() {
         List<UserClass> userClassList = userRepo.findAll();
@@ -57,13 +56,17 @@ public class Serviceclass {
         userClass.setRole("USER");
         userClass.setCreated_at(LocalDateTime.now());
         userClass.setPassword(encoder.encode(newUserDTO.getPassword()));
+        WalletClass walletClass = new WalletClass();
+        walletClass.setBalance(0);
+        walletClass.setUserId(userId);
+        userClass.setWalletClass(walletClass);
         userRepo.save(userClass);
         return "USER CREATED : " + userId;
     }
 
-    public ResponseEntity<String> login(String userID, String password) {
+    public ResponseEntity<String> login(String userID, String password) throws UserException {
 
-        UserClass userClass = userRepo.findByUserID(userID).orElseThrow(() -> new RuntimeException("Exception"));
+        UserClass userClass = userRepo.findByUserId(userID).orElseThrow(() -> new UserException("Exception"));
 
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new
                 UsernamePasswordAuthenticationToken(userClass.getUserName(), password);
@@ -100,9 +103,41 @@ public class Serviceclass {
         userClass.setRole("ADMIN");
         userClass.setCreated_at(LocalDateTime.now());
         userClass.setPassword(encoder.encode(newAdminDTO.getPassword()));
+        WalletClass walletClass = new WalletClass();
+        walletClass.setBalance(0);
+        walletClass.setUserId(userId);
+        userClass.setWalletClass(walletClass);
         userRepo.save(userClass);
         return "ADMIN CREATED : " + userId;
 
+    }
+
+    public String addMoneyToWallet(WalletDTO walletDTO) {
+        WalletClass walletClass = walletRepo.findByUserId(walletDTO.getUserId()).orElseThrow(() -> new RuntimeException("Exception"));
+        Integer totalAmount = walletClass.getBalance() + walletDTO.getAmount();
+        walletClass.setBalance(totalAmount);
+        walletRepo.save(walletClass);
+        return "Amount Added : ".concat(totalAmount.toString());
+    }
+
+    public String addSeller(AddSellerDTO addSellerDTO) {
+        UserClass userClass = new UserClass();
+        String userId = addSellerDTO.getUserName().concat(UUID.randomUUID().toString().replace("-", "").substring(0, 5));
+        userClass.setUserName("SELLER ".concat(addSellerDTO.getUserName()));
+        userClass.setUserId(userId);
+        userClass.setRole("SELLER");
+        userClass.setCreated_at(LocalDateTime.now());
+        userClass.setPassword(encoder.encode(addSellerDTO.getPassword()));
+        WalletClass walletClass = new WalletClass();
+        walletClass.setBalance(0);
+        walletClass.setUserId(userId);
+        userClass.setWalletClass(walletClass);
+        userRepo.save(userClass);
+        return "SELLER CREATED : " + userId;
+    }
+
+    public List<ProductDetailsDTO> searchProduct(String productName) {
+        return productService.searchProduct(productName);
     }
 
    /* public ResponseEntity<String> orderProduct(int custId, int prodId) {

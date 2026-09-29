@@ -6,9 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
 
 @Entity
-@Table(name = "customer_table")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,5 +28,11 @@ public class UserClass {
 
     private LocalDateTime created_at;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private WalletClass walletClass;
 
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "userId", referencedColumnName = "userId")
+    private List<OrderClass> orderClass = new LinkedList<>();
 }
