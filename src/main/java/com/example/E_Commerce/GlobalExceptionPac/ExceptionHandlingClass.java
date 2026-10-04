@@ -30,5 +30,23 @@ public class ExceptionHandlingClass {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(PaymentException.class)
+    public ResponseEntity<HashMap<String, String>> userException(PaymentException exception, HttpServletRequest request) {
+        HashMap<String, String> response = new HashMap<>();
+        response.put("Path", request.getRequestURI());
+        response.put("Exception", exception.getMessage());
+        response.put("Date AND Time", LocalDateTime.now().toString());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(OrderException.class)
+    public ResponseEntity<HashMap<String, String>> userException(OrderException exception, HttpServletRequest request) {
+        HashMap<String, String> response = new HashMap<>();
+        response.put("Path", request.getRequestURI());
+        response.put("Exception", exception.getMessage());
+        response.put("Date AND Time", LocalDateTime.now().toString());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
 
 }

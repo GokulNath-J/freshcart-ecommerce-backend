@@ -31,8 +31,12 @@ public class UserClass {
     @OneToOne(cascade = CascadeType.ALL)
     private WalletClass walletClass;
 
-
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "userId", referencedColumnName = "userId")
     private List<OrderClass> orderClass = new LinkedList<>();
+
+
+//    @OneToMany(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "sellerId", referencedColumnName = "userId")
+//    private ProductClass productClass;
 }

@@ -2,11 +2,12 @@ package com.example.E_Commerce.ControllerPac;
 
 import com.example.E_Commerce.DTO.AddProductDTO;
 import com.example.E_Commerce.DTO.ProductDTO;
+import com.example.E_Commerce.DTO.ProductDetailsDTO;
 import com.example.E_Commerce.ServicePac.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,9 +25,16 @@ public class ProductController {
 
     @PostMapping("/addProduct")
     @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<List<ProductDTO>> addOneProduct(@RequestBody AddProductDTO addProductDTO) {
-        List<ProductDTO> result = productService.addOneProduct(addProductDTO);
+    public ResponseEntity<List<ProductDTO>> addProduct(@RequestBody AddProductDTO addProductDTO) {
+        List<ProductDTO> result = productService.addProduct(addProductDTO);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/searchProductBySeller")
+    @PreAuthorize("hasRole('SELLER')")
+    public ResponseEntity<List<ProductDetailsDTO>> searchProductBySeller() {
+        List<ProductDetailsDTO> result = productService.searchProductBySeller();
+        return new ResponseEntity<>(result, HttpStatus.FOUND);
     }
 
 

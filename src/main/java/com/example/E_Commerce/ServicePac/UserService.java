@@ -2,19 +2,21 @@ package com.example.E_Commerce.ServicePac;
 
 
 import com.example.E_Commerce.DTO.*;
-import com.example.E_Commerce.Entities.ProductClass;
 import com.example.E_Commerce.Entities.UserClass;
 import com.example.E_Commerce.Entities.WalletClass;
 import com.example.E_Commerce.GlobalExceptionPac.UserException;
 import com.example.E_Commerce.Repos.UserRepo;
 import com.example.E_Commerce.Repos.WalletRepo;
 import com.example.E_Commerce.SecurityPac.JwtClass;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +25,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class Serviceclass {
+public class UserService {
 
     @Autowired
     private UserRepo userRepo;
@@ -42,22 +44,24 @@ public class Serviceclass {
     @Autowired
     private ProductService productService;
 
+    private final Logger log = LoggerFactory.getLogger(UserService.class);
+
     public ResponseEntity<List<UserClass>> getAllCustomer() {
         List<UserClass> userClassList = userRepo.findAll();
         return ResponseEntity.ok(userClassList);
     }
 
 
-    public String createNewUser(NewUserDTO newUserDTO) {
+    public String createNewUser(RegisterUserDTO registerUserDTO) {
         UserClass userClass = new UserClass();
-        String userId = newUserDTO.getUserName().concat(UUID.randomUUID().toString().replace("-", "").substring(0, 5));
-        userClass.setUserName(newUserDTO.getUserName());
+        String userId = registerUserDTO.getUserName().concat(UUID.randomUUID().toString().replace("-", "").substring(0, 5));
+        userClass.setUserName(registerUserDTO.getUserName());
         userClass.setUserId(userId);
         userClass.setRole("USER");
         userClass.setCreated_at(LocalDateTime.now());
-        userClass.setPassword(encoder.encode(newUserDTO.getPassword()));
+        userClass.setPassword(encoder.encode(registerUserDTO.getPassword()));
         WalletClass walletClass = new WalletClass();
-        walletClass.setBalance(0);
+        walletClass.setBalance(0.00);
         walletClass.setUserId(userId);
         userClass.setWalletClass(walletClass);
         userRepo.save(userClass);
@@ -65,6 +69,8 @@ public class Serviceclass {
     }
 
     public ResponseEntity<String> login(String userID, String password) throws UserException {
+
+        log.info("Inside login");
 
         UserClass userClass = userRepo.findByUserId(userID).orElseThrow(() -> new UserException("Exception"));
 
@@ -95,16 +101,16 @@ public class Serviceclass {
 //        return "Admin CREATED";
 //    }
 
-    public String createNewAdmin(NewAdminDTO newAdminDTO) {
+    public String createNewAdmin(RegisterAdminDTO registerAdminDTO) {
         UserClass userClass = new UserClass();
-        String userId = newAdminDTO.getUserName().concat(UUID.randomUUID().toString().replace("-", "").substring(0, 5));
-        userClass.setUserName("ADMIN ".concat(newAdminDTO.getUserName()));
+        String userId = registerAdminDTO.getUserName().concat(UUID.randomUUID().toString().replace("-", "").substring(0, 5));
+        userClass.setUserName("ADMIN ".concat(registerAdminDTO.getUserName()));
         userClass.setUserId(userId);
         userClass.setRole("ADMIN");
         userClass.setCreated_at(LocalDateTime.now());
-        userClass.setPassword(encoder.encode(newAdminDTO.getPassword()));
+        userClass.setPassword(encoder.encode(registerAdminDTO.getPassword()));
         WalletClass walletClass = new WalletClass();
-        walletClass.setBalance(0);
+        walletClass.setBalance(0.00);
         walletClass.setUserId(userId);
         userClass.setWalletClass(walletClass);
         userRepo.save(userClass);
@@ -114,7 +120,7 @@ public class Serviceclass {
 
     public String addMoneyToWallet(WalletDTO walletDTO) {
         WalletClass walletClass = walletRepo.findByUserId(walletDTO.getUserId()).orElseThrow(() -> new RuntimeException("Exception"));
-        Integer totalAmount = walletClass.getBalance() + walletDTO.getAmount();
+        Double totalAmount = walletClass.getBalance() + walletDTO.getAmount();
         walletClass.setBalance(totalAmount);
         walletRepo.save(walletClass);
         return "Amount Added : ".concat(totalAmount.toString());
@@ -129,15 +135,22 @@ public class Serviceclass {
         userClass.setCreated_at(LocalDateTime.now());
         userClass.setPassword(encoder.encode(addSellerDTO.getPassword()));
         WalletClass walletClass = new WalletClass();
-        walletClass.setBalance(0);
+        walletClass.setBalance(0.00);
         walletClass.setUserId(userId);
         userClass.setWalletClass(walletClass);
         userRepo.save(userClass);
         return "SELLER CREATED : " + userId;
     }
 
-    public List<ProductDetailsDTO> searchProduct(String productName) {
-        return productService.searchProduct(productName);
+    public List<ProductDetailsDTO> searchProductBycCategory(String category) {
+        return productService.searchProduct(category);
+    }
+
+    public UserDetailsDTO getLoggedInUserDetails() {
+        UserClass userClass = userRepo.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+        UserDetailsDTO dto = new UserDetailsDTO(userClass.getUserId(), userClass.getUserName(), userClass.getWalletClass(),
+                userClass.getOrderClass());
+        return dto;
     }
 
    /* public ResponseEntity<String> orderProduct(int custId, int prodId) {

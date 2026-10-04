@@ -16,7 +16,7 @@ public class WalletClass {
     @GeneratedValue(generator = "seq", strategy = GenerationType.AUTO)
     private Integer walletId;
 
-    private Integer balance;
+    private Double balance;
 
     @JoinColumn(name = "userId", referencedColumnName = "userId")
     private String userId;

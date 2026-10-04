@@ -1,17 +1,25 @@
-package com.example.E_Commerce.DTO;
+package com.example.E_Commerce.Entities;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductDetailsDTO {
+public class ExpiredProducts {
 
+    @Id
     private Integer productId;
+
+    private String sellerId;
+
     private String productName;
     private String brandName;
     private String description;
@@ -20,15 +28,8 @@ public class ProductDetailsDTO {
     private Double price;
     private LocalDate expireDate;
     private Double discountPercent;
-    private Double totalPriceAfterDiscount;
+    private LocalDateTime createdAt;
 
 
-    public ProductDetailsDTO(Integer productId, String productName, Integer quantity, Double totalPriceAfterDiscount) {
-        this.productId = productId;
-        this.productName = productName;
-        this.quantity = quantity;
-        this.totalPriceAfterDiscount = totalPriceAfterDiscount;
-    }
-
-
+    private Integer daysBeforeToAddDiscount;
 }

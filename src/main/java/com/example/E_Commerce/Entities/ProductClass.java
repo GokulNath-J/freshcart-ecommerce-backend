@@ -19,13 +19,33 @@ public class ProductClass {
     @SequenceGenerator(name = "seq", sequenceName = "productSeq", initialValue = 1, allocationSize = 1)
     @GeneratedValue(generator = "seq", strategy = GenerationType.AUTO)
     private Integer productId;
+
+    private String sellerId;
+
     private String productName;
     private String brandName;
     private String description;
     private String category;
     private Integer quantity;
     private Double price;
-    private LocalDate expireDate;
     private Double discountPercent;
     private LocalDateTime createdAt;
+
+    private LocalDate expireDate;
+
+    private Integer daysBeforeToAddDiscount;
+
+    public ProductClass(String sellerId, String productName, String brandName, String description, String category, Integer quantity, Double price, Double discountPercent, LocalDateTime createdAt, LocalDate expireDate, Integer daysBeforeToAddDiscount) {
+        this.sellerId = sellerId;
+        this.productName = productName;
+        this.brandName = brandName;
+        this.description = description;
+        this.category = category;
+        this.quantity = quantity;
+        this.price = price;
+        this.discountPercent = discountPercent;
+        this.createdAt = createdAt;
+        this.expireDate = expireDate;
+        this.daysBeforeToAddDiscount = daysBeforeToAddDiscount;
+    }
 }

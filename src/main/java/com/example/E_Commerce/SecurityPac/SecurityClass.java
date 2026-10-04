@@ -38,6 +38,7 @@ public class SecurityClass {
                         .requestMatchers(HttpMethod.POST, "/user/createNewuser").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/createNewAdmin").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/order/testplaceOrder").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(cus -> cus
@@ -48,6 +49,23 @@ public class SecurityClass {
                 .build();
         return filterChain;
     }
+
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+//        SecurityFilterChain filterChain = httpSecurity
+//                .csrf(csrf -> csrf.disable())
+//                .addFilterBefore(jwtAuthfilter, UsernamePasswordAuthenticationFilter.class)
+//                .authorizeHttpRequests(auth -> auth
+//                        .anyRequest().permitAll())
+//                .httpBasic(Customizer.withDefaults())
+//                .formLogin(cus -> cus
+//                        .defaultSuccessUrl("/cus/welcome", true)
+//                        .failureUrl("/login?error=true"))
+//                .sessionManagement(
+//                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .build();
+//        return filterChain;
+//    }
 
 
     @Bean

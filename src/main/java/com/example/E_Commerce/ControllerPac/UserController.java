@@ -4,7 +4,7 @@ package com.example.E_Commerce.ControllerPac;
 import com.example.E_Commerce.DTO.*;
 import com.example.E_Commerce.Entities.UserClass;
 import com.example.E_Commerce.GlobalExceptionPac.UserException;
-import com.example.E_Commerce.ServicePac.Serviceclass;
+import com.example.E_Commerce.ServicePac.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private Serviceclass serviceclass;
+    private UserService userService;
 
     @GetMapping("/welcome")
     @PreAuthorize("hasRole('USER')")
@@ -34,14 +34,14 @@ public class UserController {
     }
 
     @PostMapping("/createNewuser")
-    public ResponseEntity<String> createNewUser(@RequestBody NewUserDTO newUserDTO) {
-        String result = serviceclass.createNewUser(newUserDTO);
+    public ResponseEntity<String> createNewUser(@RequestBody RegisterUserDTO registerUserDTO) {
+        String result = userService.createNewUser(registerUserDTO);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
     @PostMapping("/createNewAdmin")
-    public ResponseEntity<String> createNewAdmin(@RequestBody NewAdminDTO newAdminDTO) {
-        String result = serviceclass.createNewAdmin(newAdminDTO);
+    public ResponseEntity<String> createNewAdmin(@RequestBody RegisterAdminDTO registerAdminDTO) {
+        String result = userService.createNewAdmin(registerAdminDTO);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
@@ -49,39 +49,46 @@ public class UserController {
     @GetMapping("/getAllCustomer")
     @PreAuthorize("hasAuthority('READ_PRIVILEGE')")
     public ResponseEntity<List<UserClass>> getAllCustomer() {
-        return serviceclass.getAllCustomer();
+        return userService.getAllCustomer();
     }
 
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestParam String userID, @RequestParam String password) throws UserException {
-        return serviceclass.login(userID, password);
+        return userService.login(userID, password);
     }
 
     @GetMapping("/test")
     @PostAuthorize("returnObject.body.customerName == authentication.name")
     public ResponseEntity<UserClass> testing() {
-        return serviceclass.test();
+        return userService.test();
     }
 
 
     @PostMapping("/addMoneyToWallet")
     public ResponseEntity<String> addMoneyToWallet(@RequestBody WalletDTO walletDTO) {
-        String result = serviceclass.addMoneyToWallet(walletDTO);
+        String result = userService.addMoneyToWallet(walletDTO);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping("/addSeller")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> addSeller(@RequestBody AddSellerDTO addSellerDTO) {
-        String result = serviceclass.addSeller(addSellerDTO);
+        String result = userService.addSeller(addSellerDTO);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
-    @PostMapping("/searchProduct")
-    public ResponseEntity<List<ProductDetailsDTO>> searchProduct(@RequestParam String productName) {
-        return new ResponseEntity<>(serviceclass.searchProduct(productName), HttpStatus.FOUND);
+    @PostMapping("/searchProductBycCategory")
+    public ResponseEntity<List<ProductDetailsDTO>> searchProductBycCategory(@RequestParam String category) {
+        return new ResponseEntity<>(userService.searchProductBycCategory(category), HttpStatus.FOUND);
     }
+
+    @GetMapping("/getLoggedInUserDetails")
+    public ResponseEntity<UserDetailsDTO> getLoggedInUserDetails() {
+        UserDetailsDTO result = userService.getLoggedInUserDetails();
+        return new ResponseEntity<>(result, HttpStatus.FOUND);
+    }
+
 
 //    @PostMapping("/addAdmin")
 //    public ResponseEntity<String> addOneAdmin(@RequestBody AdminClass adminClass) {
