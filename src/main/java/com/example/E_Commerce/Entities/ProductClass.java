@@ -19,9 +19,7 @@ public class ProductClass {
     @SequenceGenerator(name = "seq", sequenceName = "productSeq", initialValue = 1, allocationSize = 1)
     @GeneratedValue(generator = "seq", strategy = GenerationType.AUTO)
     private Integer productId;
-
     private String sellerId;
-
     private String productName;
     private String brandName;
     private String description;
@@ -30,9 +28,7 @@ public class ProductClass {
     private Double price;
     private Double discountPercent;
     private LocalDateTime createdAt;
-
     private LocalDate expireDate;
-
     private Integer daysBeforeToAddDiscount;
 
     public ProductClass(String sellerId, String productName, String brandName, String description, String category, Integer quantity, Double price, Double discountPercent, LocalDateTime createdAt, LocalDate expireDate, Integer daysBeforeToAddDiscount) {

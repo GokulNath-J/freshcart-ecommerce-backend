@@ -2,6 +2,7 @@ package com.example.E_Commerce.ServicePac;
 
 
 import com.example.E_Commerce.DTO.*;
+import com.example.E_Commerce.Entities.ProductClass;
 import com.example.E_Commerce.Entities.UserClass;
 import com.example.E_Commerce.Entities.WalletClass;
 import com.example.E_Commerce.GlobalExceptionPac.UserException;
@@ -11,6 +12,7 @@ import com.example.E_Commerce.SecurityPac.JwtClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -151,6 +153,10 @@ public class UserService {
         UserDetailsDTO dto = new UserDetailsDTO(userClass.getUserId(), userClass.getUserName(), userClass.getWalletClass(),
                 userClass.getOrderClass());
         return dto;
+    }
+
+    public Page<ProductClass> searchProductByCategoryAndPaging(String category, int page, int size) {
+        return productService.searchProductByCategoryAndPaging(category, page, size);
     }
 
    /* public ResponseEntity<String> orderProduct(int custId, int prodId) {

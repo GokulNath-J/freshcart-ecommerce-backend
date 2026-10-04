@@ -18,13 +18,13 @@ public class ScheduledClass {
     @Autowired
     private ProductService productService;
 
-    @Scheduled(cron = "0 36 16 * * *")
+    @Scheduled(cron = "0 0 12 * * *")
     public void addingDiscountsToExpiringProducts() {
         log.info("Inside addingDiscountsToExpiringProducts");
         productService.addingDiscountsToExpiringProducts();
     }
 
-    @Scheduled(cron = "0 0 17 * * *")
+    @Scheduled(cron = "0 58 11 * * *")
     public void removingExpiredProducts() {
         log.info("Inside removingExpiredProducts");
         productService.removingExpiredProducts();

@@ -13,6 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -43,9 +46,7 @@ public class ProductService {
 
 
     public List<ProductDTO> addProduct(AddProductDTO addProductDTO) {
-
         UserDetailsDTO userDetailsDTO = userService.getLoggedInUserDetails();
-
         for (ProductDTO productDTO : addProductDTO.getProductDTOList()) {
             Integer daysBeforeToAddDiscount = null;
             if (productDTO.getExpireDate() != null) {
@@ -62,6 +63,7 @@ public class ProductService {
 
     public List<ProductDetailsDTO> searchProduct(String category) throws ProductException {
         Optional<List<ProductClass>> productClass = productRepo.findAllByCategory(category);
+//        ProductClass productClass = productRepo.findAllByCategory(category).orElseThrow(() -> new ProductException(category + " Not Found"), PageRequest.of(page,size));
         if (productClass.get().size() == 0) {
             throw new ProductException("Product Not Found");
         }
@@ -198,5 +200,37 @@ public class ProductService {
         } else {
             throw new ProductException("Product Quntatiy is less");
         }
+    }
+
+    @Transactional
+    public String addDiscountToOneProduct(Integer productId, Double discount) {
+        ProductClass productClass = productRepo.findByProductId(productId)
+                .orElseThrow(() -> new ProductException(productId + " Not Found"));
+        productClass.setDiscountPercent(discount);
+        return "Discount Added".concat(discount.toString());
+    }
+
+    @Transactional
+    public String removeDiscount(Integer productId) {
+        ProductClass productClass = productRepo.findByProductId(productId)
+                .orElseThrow(() -> new ProductException(productId + " Not Found"));
+        productClass.setDiscountPercent(null);
+        return "Discount Removed";
+    }
+
+    @Transactional
+    public String removeProduct(Integer productId) {
+        ProductClass productClass = productRepo.findByProductId(productId)
+                .orElseThrow(() -> new ProductException(productId + " Not Found"));
+        if (productClass.getSellerId().equals(userService.getLoggedInUserDetails().getUserId())) {
+            productRepo.delete(productClass);
+            return "Product Removed";
+        }
+        return "You Cant remove other Seller Products";
+    }
+
+    public Page<ProductClass> searchProductByCategoryAndPaging(String category, int page, int size) {
+        Page<ProductClass> productClasses = productRepo.findByCategory(category,PageRequest.of(page,size,Sort.by("category").ascending()));
+        return productClasses;
     }
 }
