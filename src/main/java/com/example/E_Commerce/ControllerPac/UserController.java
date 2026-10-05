@@ -20,8 +20,12 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
+
     private UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestParam String userID, @RequestParam String password) throws UserException {
@@ -64,6 +68,12 @@ public class UserController {
         return new ResponseEntity<>(userService.searchProductByCategoryAndPaging(category, page, size), HttpStatus.FOUND);
     }
 
+    @PostMapping("/searchProductByName")
+    public ResponseEntity<ProductDetailsDTO> searchProductByName(@RequestParam Integer productId) {
+        return new ResponseEntity<>(userService.searchProductByName(productId), HttpStatus.FOUND);
+    }
+
+
     @GetMapping("/getLoggedInUserDetails")
     public ResponseEntity<UserDetailsDTO> getLoggedInUserDetails() {
         UserDetailsDTO result = userService.getLoggedInUserDetails();
@@ -82,10 +92,10 @@ public class UserController {
         return "Admin LoggedIn";
     }
 
-    @GetMapping("/getAllCustomer")
-    @PreAuthorize("hasAuthority('READ_PRIVILEGE')")
-    public ResponseEntity<List<UserClass>> getAllCustomer() {
-        return userService.getAllCustomer();
+    @GetMapping("/getAllUser")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<UserClass>> getAllUser() {
+        return userService.getAllUser();
     }
 
     @GetMapping("/test")

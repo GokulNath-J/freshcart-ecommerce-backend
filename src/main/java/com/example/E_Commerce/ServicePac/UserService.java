@@ -29,26 +29,29 @@ import java.util.UUID;
 @Service
 public class UserService {
 
-    @Autowired
     private UserRepo userRepo;
 
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);
 
-    @Autowired
     private AuthenticationManager authenticationManager;
 
-    @Autowired
     private JwtClass jwtClass;
 
-    @Autowired
     private WalletRepo walletRepo;
 
-    @Autowired
     private ProductService productService;
+
+    public UserService(UserRepo userRepo, AuthenticationManager authenticationManager, JwtClass jwtClass, WalletRepo walletRepo, ProductService productService) {
+        this.userRepo = userRepo;
+        this.authenticationManager = authenticationManager;
+        this.jwtClass = jwtClass;
+        this.walletRepo = walletRepo;
+        this.productService = productService;
+    }
 
     private final Logger log = LoggerFactory.getLogger(UserService.class);
 
-    public ResponseEntity<List<UserClass>> getAllCustomer() {
+    public ResponseEntity<List<UserClass>> getAllUser() {
         List<UserClass> userClassList = userRepo.findAll();
         return ResponseEntity.ok(userClassList);
     }
@@ -97,11 +100,6 @@ public class UserService {
         return new ResponseEntity<>(userClass, HttpStatus.FOUND);
     }
 
-//    public String addOneAdmin(AdminClass adminClass) {
-//        adminClass.setRole("ADMIN");
-//        adminRepo.save(adminClass);
-//        return "Admin CREATED";
-//    }
 
     public String createNewAdmin(RegisterAdminDTO registerAdminDTO) {
         UserClass userClass = new UserClass();
@@ -157,6 +155,10 @@ public class UserService {
 
     public Page<ProductClass> searchProductByCategoryAndPaging(String category, int page, int size) {
         return productService.searchProductByCategoryAndPaging(category, page, size);
+    }
+
+    public ProductDetailsDTO searchProductByName(Integer productName) {
+        return productService.searchProductId(productName);
     }
 
    /* public ResponseEntity<String> orderProduct(int custId, int prodId) {

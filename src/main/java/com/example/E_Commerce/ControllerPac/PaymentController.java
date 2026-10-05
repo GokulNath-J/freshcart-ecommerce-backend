@@ -19,8 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentController {
 
 
-    @Autowired
     private PaymentService paymentService;
+
+    public PaymentController(PaymentService paymentService) {
+        this.paymentService = paymentService;
+    }
 
     @PostMapping("/paymentRequest")
     public ResponseEntity<OrderResponseDTO> paymentRequest(@RequestBody PaymentRequestDTO paymentRequestDTO) throws UserException {

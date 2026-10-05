@@ -12,6 +12,9 @@ import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,18 +30,18 @@ import java.util.Optional;
 @Service
 public class ProductService {
 
-    @Autowired
     private ProductRepo productRepo;
 
-//    @Autowired
-//    private PaymentService paymentService;
-
-    @Autowired
     private ExpiredProductsRepo expiredProductsRepo;
 
     @Autowired
     @Lazy
     private UserService userService;
+
+    public ProductService(ProductRepo productRepo, ExpiredProductsRepo expiredProductsRepo) {
+        this.productRepo = productRepo;
+        this.expiredProductsRepo = expiredProductsRepo;
+    }
 
     private static Double commonDiscountPercentage = 2.00;
 
@@ -87,21 +90,9 @@ public class ProductService {
             if (productClass.getDiscountPercent() != null) {
                 Double finalPriceAfterAddingDiscount = calculateDiscount(productClass.getDiscountPercent()
                         , orderRequestDTO.getQuantity(), totalAmount);
-//                PaymentClass paymentClass = paymentService.generatePaymentID(userService.getLoggedInUserDetails().getUserId()
-//                        , finalPriceAfterAddingDiscount, orderRequestDTO.getProductId());
-//                orderService.saveOrder(productClass, userService.getLoggedInUserDetails().getUserId(), finalPriceAfterAddingDiscount
-//                        , orderRequestDTO.getQuantity());
-//                return new ProductAndPaymentDTO(productClass.getProductId(), productClass.getProductName()
-//                        , productClass.getQuantity(), productClass.getDiscountPercent(), paymentClass);
-//                return new OrderResponseDTO(paymentID, productClass.getProductId(), orderRequestDTO.getQuantity()
-//                        , finalPriceAfterAddingDiscount);
                 return new ProductDetailsDTO(productClass.getProductId(), productClass.getProductName()
                         , orderRequestDTO.getQuantity(), finalPriceAfterAddingDiscount);
             } else {
-//                PaymentClass paymentClass = paymentService.generatePaymentID(userService.getLoggedInUserDetails().getUserId()
-//                        , totalAmount, orderRequestDTO.getProductId());
-//                return new ProductAndPaymentDTO(productClass.getProductId(), productClass.getProductName()
-//                        , productClass.getQuantity(), productClass.getDiscountPercent(), paymentClass);
                 return new ProductDetailsDTO(productClass.getProductId(), productClass.getProductName()
                         , orderRequestDTO.getQuantity(), totalAmount);
             }
@@ -174,6 +165,7 @@ public class ProductService {
         }
     }
 
+    @Transactional
     public void removingExpiredProducts() {
         List<ProductClass> productList = productRepo.findExpiringpProducts(LocalDate.now()).orElseThrow(
                 () -> new ProductException("No Expiring Products"));
@@ -192,6 +184,7 @@ public class ProductService {
 
 
     @Transactional
+    @CachePut(cacheNames = "Product", key = "#productId")
     public void orderToProduct(Integer productId, Integer quantity) {
         ProductClass productClass = productRepo.findByProductId(productId)
                 .orElseThrow(() -> new ProductException(productId + " Not Found"));
@@ -203,6 +196,7 @@ public class ProductService {
     }
 
     @Transactional
+    @CachePut(cacheNames = "Product", key = "#productId")
     public String addDiscountToOneProduct(Integer productId, Double discount) {
         ProductClass productClass = productRepo.findByProductId(productId)
                 .orElseThrow(() -> new ProductException(productId + " Not Found"));
@@ -219,6 +213,7 @@ public class ProductService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "Product", key = "#productId")
     public String removeProduct(Integer productId) {
         ProductClass productClass = productRepo.findByProductId(productId)
                 .orElseThrow(() -> new ProductException(productId + " Not Found"));
@@ -230,7 +225,17 @@ public class ProductService {
     }
 
     public Page<ProductClass> searchProductByCategoryAndPaging(String category, int page, int size) {
-        Page<ProductClass> productClasses = productRepo.findByCategory(category,PageRequest.of(page,size,Sort.by("category").ascending()));
+        Page<ProductClass> productClasses = productRepo.findByCategory(category, PageRequest.of(page, size, Sort.by("category").ascending()));
         return productClasses;
+    }
+
+    @Cacheable(cacheNames = "Product", key = "#productId")
+    public ProductDetailsDTO searchProductId(Integer productId) {
+        log.info("Inside searchProductByName(String productName)");
+        ProductClass aClass = productRepo.findByProductId(productId)
+                .orElseThrow(() -> new ProductException(productId + " Not Found"));
+        return new ProductDetailsDTO(aClass.getProductId(), aClass.getProductName(), aClass.getBrandName()
+                , aClass.getDescription(), aClass.getCategory(), aClass.getQuantity(), aClass.getPrice(),
+                aClass.getExpireDate(), aClass.getDiscountPercent(), null);
     }
 }

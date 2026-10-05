@@ -22,19 +22,21 @@ import java.util.UUID;
 @Service
 public class PaymentService {
 
-
-    @Autowired
     private WalletRepo walletRepo;
 
-    @Autowired
     private PaymentRepo paymentRepo;
 
-    @Autowired
     private UserService userService;
 
     @Autowired
     @Lazy
     private OrderService orderService;
+
+    public PaymentService(WalletRepo walletRepo, PaymentRepo paymentRepo, UserService userService) {
+        this.walletRepo = walletRepo;
+        this.paymentRepo = paymentRepo;
+        this.userService = userService;
+    }
 
     private final Logger log = LoggerFactory.getLogger(PaymentService.class);
 

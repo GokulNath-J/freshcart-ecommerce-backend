@@ -22,17 +22,20 @@ import java.util.UUID;
 @Service
 public class OrderService {
 
-    @Autowired
     private ProductService productService;
 
-    @Autowired
     private OrderRepo orderRepo;
 
-    @Autowired
     private UserService userService;
 
-    @Autowired
     private PaymentService paymentService;
+
+    public OrderService(ProductService productService, OrderRepo orderRepo, UserService userService, PaymentService paymentService) {
+        this.productService = productService;
+        this.orderRepo = orderRepo;
+        this.userService = userService;
+        this.paymentService = paymentService;
+    }
 
     private final Logger log = LoggerFactory.getLogger(OrderService.class);
 

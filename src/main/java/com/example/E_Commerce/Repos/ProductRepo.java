@@ -26,4 +26,7 @@ public interface ProductRepo extends JpaRepository<ProductClass, Integer> {
 //    Page<ProductClass> findByCategoryPaging(String category);
 
     Page<ProductClass> findByCategory(String category, PageRequest of);
+
+    Optional<ProductClass> findByProductName(String productName);
+
 }

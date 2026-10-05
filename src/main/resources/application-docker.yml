@@ -2,15 +2,15 @@ spring:
   application:
     name: E-Commerce
   datasource:
-    username: root
-    password: Gokul@03
-    url: jdbc:mysql://localhost:3306/springsecurity1?createDatabaseIfNotExist=true
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL}
   jpa:
     hibernate:
       ddl-auto: update
   data:
     redis:
-      host: redis-con
+      host: ${REDIS_CONTAINER}
       port: 6379
 server:
   port: 8081

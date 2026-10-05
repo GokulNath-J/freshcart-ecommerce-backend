@@ -1,6 +1,5 @@
 package com.example.E_Commerce.ControllerPac;
 
-import com.example.E_Commerce.DTO.OrderDetailsDTO;
 import com.example.E_Commerce.DTO.OrderRequestDTO;
 import com.example.E_Commerce.DTO.OrderResponseDTO;
 import com.example.E_Commerce.GlobalExceptionPac.UserException;
@@ -17,10 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/order")
 public class OrderController {
 
-
-    @Autowired
     private OrderService orderService;
 
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
     @PostMapping("/orderRequest")
     public ResponseEntity<OrderResponseDTO> placeOrder(@RequestBody OrderRequestDTO orderRequestDTO) throws UserException {
