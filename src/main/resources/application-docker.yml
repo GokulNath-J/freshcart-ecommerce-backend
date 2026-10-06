@@ -14,3 +14,5 @@ spring:
       port: 6379
 server:
   port: 8081
+SECRET:
+  KEY: ${SECRET_KEY}
