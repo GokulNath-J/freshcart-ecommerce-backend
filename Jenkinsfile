@@ -31,9 +31,11 @@ pipeline {
                 echo 'Stopping old container if it exists...'
                 bat '''
                   docker stop e-commerce-con || exit 0
-                  docker stop redis-container || exit 0
-                  docker stop mysql-con || exit 0
                   docker rm e-commerce-con || exit 0
+                  docker stop redis-container || exit 0
+                  docker rm redis-container || exit 0
+                  docker stop mysql-con || exit 0
+                  docker rm mysql-con || exit 0
                    '''
                 }
         }
