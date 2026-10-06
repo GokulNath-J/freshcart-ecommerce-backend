@@ -17,7 +17,7 @@ pipeline {
         stage('Remove Old image') {
             steps {
                 echo 'Building the project with Maven...'
-                bat ' docker rmi ecommerce:latest || exit 0 '
+                bat ' docker rmi ecommerce:latest -f || exit 0 '
             }
         }
         stage('Build image') {
