@@ -14,16 +14,18 @@ pipeline {
                 bat 'mvn clean package -DskipTests'
             }
         }
-        stage('Build image') {
+        stage('Remove Old image') {
             steps {
                 echo 'Building the project with Maven...'
-                bat '''
-                docker rmi ecommerce:latest || exit 0
-                docker build -t ecommerce:latest .
-                '''
+                bat ' docker rmi ecommerce:latest || exit 0 '
             }
         }
-
+        stage('Build image') {
+             steps {
+                 echo 'Building the project with Maven...'
+                 bat 'docker build -t ecommerce:latest .'
+             }
+        }
         stage('Stop Old Container (if any)') {
             steps {
                 echo 'Stopping old container if it exists...'
