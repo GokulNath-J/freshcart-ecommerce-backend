@@ -27,11 +27,16 @@ pipeline {
              }
         }
         stage('Stop Old Container (if any)') {
-            steps {
-                echo 'Stopping old container if it exists...'
-                bat 'docker-compose down || exit 0'
-            }
-        }
+                    steps {
+                        echo 'Stopping old container if it exists...'
+                        bat '''
+                        docker stop e-commerce-con || exit 0
+                        docker stop redis-container || exit 0
+                        docker stop mysql-con || exit 0
+                        docker rm e-commerce-con || exit 0
+                        '''
+                    }
+                }
         stage('Run Docker Container') {
             steps {
                 echo 'Running new container...'
