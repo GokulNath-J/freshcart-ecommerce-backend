@@ -3,6 +3,7 @@ package com.example.E_Commerce.GlobalExceptionPac;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -41,6 +42,15 @@ public class ExceptionHandlingClass {
 
     @ExceptionHandler(OrderException.class)
     public ResponseEntity<HashMap<String, String>> userException(OrderException exception, HttpServletRequest request) {
+        HashMap<String, String> response = new HashMap<>();
+        response.put("Path", request.getRequestURI());
+        response.put("Exception", exception.getMessage());
+        response.put("Date AND Time", LocalDateTime.now().toString());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    public ResponseEntity<HashMap<String, String>> userException(ObjectOptimisticLockingFailureException exception, HttpServletRequest request) {
         HashMap<String, String> response = new HashMap<>();
         response.put("Path", request.getRequestURI());
         response.put("Exception", exception.getMessage());
