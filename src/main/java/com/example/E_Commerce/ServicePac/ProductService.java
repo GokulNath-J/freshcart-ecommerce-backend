@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -185,22 +186,36 @@ public class ProductService {
 
     @Transactional
     @CachePut(cacheNames = "Product", key = "#productId")
-    public void orderToProduct(Integer productId, Integer quantity) {
-        ProductClass productClass = productRepo.findByProductId(productId)
-                .orElseThrow(() -> new ProductException(productId + " Not Found"));
-        if (productClass.getQuantity() >= quantity) {
-            productClass.setQuantity(productClass.getQuantity() - quantity);
-        } else {
-            throw new ProductException("Product Quntatiy is less");
+    public void orderToProduct(Integer productId, Integer quantity) throws ProductException{
+        try {
+            ProductClass productClass = productRepo.findByProductId(productId)
+                    .orElseThrow(() -> new ProductException(productId + " Not Found"));
+            if (productClass.getQuantity() >= quantity) {
+                try {
+                    log.info("Inside Thread 5000");
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                productClass.setQuantity(productClass.getQuantity() - quantity);
+            } else {
+                throw new ProductException("Product Quntatiy is less");
+            }
+        } catch (ObjectOptimisticLockingFailureException e) {
+            throw new ProductException("Stock just changed, please try again");
         }
     }
 
     @Transactional
     @CachePut(cacheNames = "Product", key = "#productId")
-    public String addDiscountToOneProduct(Integer productId, Double discount) {
+    public String addDiscountToOneProduct(Integer productId, Double discount) throws UserException {
         ProductClass productClass = productRepo.findByProductId(productId)
                 .orElseThrow(() -> new ProductException(productId + " Not Found"));
-        productClass.setDiscountPercent(discount);
+        if (productClass.getSellerId().equals(userService.getLoggedInUserDetails().getUserId())) {
+            productClass.setDiscountPercent(discount);
+        } else {
+            throw new UserException("Different User");
+        }
         return "Discount Added".concat(discount.toString());
     }
 

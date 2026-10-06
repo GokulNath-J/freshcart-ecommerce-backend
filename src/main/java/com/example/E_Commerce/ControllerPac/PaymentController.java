@@ -4,6 +4,7 @@ package com.example.E_Commerce.ControllerPac;
 import com.example.E_Commerce.DTO.OrderRequestDTO;
 import com.example.E_Commerce.DTO.OrderResponseDTO;
 import com.example.E_Commerce.DTO.PaymentRequestDTO;
+import com.example.E_Commerce.GlobalExceptionPac.ProductException;
 import com.example.E_Commerce.GlobalExceptionPac.UserException;
 import com.example.E_Commerce.ServicePac.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class PaymentController {
     }
 
     @PostMapping("/paymentRequest")
-    public ResponseEntity<OrderResponseDTO> paymentRequest(@RequestBody PaymentRequestDTO paymentRequestDTO) throws UserException {
+    public ResponseEntity<OrderResponseDTO> paymentRequest(@RequestBody PaymentRequestDTO paymentRequestDTO) throws UserException, ProductException {
         return new ResponseEntity<>(paymentService.paymentRequest(paymentRequestDTO), HttpStatus.OK);
     }
 }

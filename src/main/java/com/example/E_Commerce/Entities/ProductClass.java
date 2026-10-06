@@ -32,6 +32,9 @@ public class ProductClass implements Serializable {
     private LocalDate expireDate;
     private Integer daysBeforeToAddDiscount;
 
+    @Version
+    private Long version;
+
     public ProductClass(String sellerId, String productName, String brandName, String description, String category, Integer quantity, Double price, Double discountPercent, LocalDateTime createdAt, LocalDate expireDate, Integer daysBeforeToAddDiscount) {
         this.sellerId = sellerId;
         this.productName = productName;

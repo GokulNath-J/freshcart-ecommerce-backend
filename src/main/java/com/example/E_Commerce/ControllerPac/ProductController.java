@@ -3,6 +3,7 @@ package com.example.E_Commerce.ControllerPac;
 import com.example.E_Commerce.DTO.AddProductDTO;
 import com.example.E_Commerce.DTO.ProductDTO;
 import com.example.E_Commerce.DTO.ProductDetailsDTO;
+import com.example.E_Commerce.GlobalExceptionPac.UserException;
 import com.example.E_Commerce.ServicePac.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class ProductController {
 
     @PutMapping("/addDiscountToOneProduct")
     @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<String> addDiscountToOneProduct(@RequestParam Integer productId, @RequestParam Double discount) {
+    public ResponseEntity<String> addDiscountToOneProduct(@RequestParam Integer productId, @RequestParam Double discount) throws UserException {
         String result = productService.addDiscountToOneProduct(productId, discount);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }

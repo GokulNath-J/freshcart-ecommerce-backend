@@ -10,7 +10,9 @@ spring:
       ddl-auto: update
   data:
     redis:
-      host: redis-con
+      host: happy_sammet
       port: 6379
 server:
   port: 8081
+SECRET:
+  KEY: mD4%zL!pT8@7rHqU#xCwF9aM3dP2gV1o

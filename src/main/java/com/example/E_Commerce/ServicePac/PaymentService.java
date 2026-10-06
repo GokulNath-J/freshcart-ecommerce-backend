@@ -6,6 +6,7 @@ import com.example.E_Commerce.Entities.PaymentClass;
 import com.example.E_Commerce.Entities.StatusClass;
 import com.example.E_Commerce.Entities.WalletClass;
 import com.example.E_Commerce.GlobalExceptionPac.PaymentException;
+import com.example.E_Commerce.GlobalExceptionPac.ProductException;
 import com.example.E_Commerce.GlobalExceptionPac.UserException;
 import com.example.E_Commerce.Repos.PaymentRepo;
 import com.example.E_Commerce.Repos.WalletRepo;
@@ -41,7 +42,7 @@ public class PaymentService {
     private final Logger log = LoggerFactory.getLogger(PaymentService.class);
 
     @Transactional(rollbackOn = Exception.class)
-    public OrderResponseDTO paymentRequest(PaymentRequestDTO paymentRequestDTO) throws UserException {
+    public OrderResponseDTO paymentRequest(PaymentRequestDTO paymentRequestDTO) throws UserException, ProductException {
         PaymentClass payment = paymentRepo.findByPaymentId(paymentRequestDTO.getPaymentId())
                 .orElseThrow(() -> new PaymentException("PaymentId Not Found"));
         WalletClass walletClass = walletRepo.findByWalletId(userService.getLoggedInUserDetails()

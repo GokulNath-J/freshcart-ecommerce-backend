@@ -71,7 +71,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponseDTO paymentToOrder(PaymentClass payment, String paymentId) {
+    public OrderResponseDTO paymentToOrder(PaymentClass payment, String paymentId) throws ProductException {
         OrderClass orderClass = orderRepo.findByPaymentClassPaymentId(paymentId)
                 .orElseThrow(() -> new OrderException("PaymentId Not Found In Orders"));
         orderClass.setStatus(StatusClass.CONFIRMED);

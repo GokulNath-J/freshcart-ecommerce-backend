@@ -123,7 +123,7 @@ public class UserService {
         Double totalAmount = walletClass.getBalance() + walletDTO.getAmount();
         walletClass.setBalance(totalAmount);
         walletRepo.save(walletClass);
-        return "Amount Added : ".concat(totalAmount.toString());
+        return "Amount Added : ".concat(walletDTO.getAmount().toString());
     }
 
     public String addSeller(AddSellerDTO addSellerDTO) {
