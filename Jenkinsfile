@@ -37,7 +37,7 @@ pipeline {
                   docker stop mysql-con || exit 0
                   docker rm mysql-con || exit 0
                    '''
-                }
+               }
         }
         stage('Run Docker Container') {
             steps {
