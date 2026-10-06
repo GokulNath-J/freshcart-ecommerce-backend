@@ -14,19 +14,10 @@ pipeline {
                 bat 'mvn clean package -DskipTests'
             }
         }
-        stage('Build Docker Image') {
-            steps {
-                echo 'Building Docker image...'
-                bat 'docker build -t ecommerce:latest .'
-            }
-        }
         stage('Stop Old Container (if any)') {
             steps {
                 echo 'Stopping old container if it exists...'
-                bat '''
-                docker stop e-commerce-con || exit 0
-                docker rm e-commerce-con || exit 0
-                '''
+                bat 'docker-compose down'
             }
         }
         stage('Run Docker Container') {
