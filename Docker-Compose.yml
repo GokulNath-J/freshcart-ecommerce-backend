@@ -60,3 +60,6 @@ volumes:
 networks:
   e-commerce-network:
     driver: bridge
+
+
+
