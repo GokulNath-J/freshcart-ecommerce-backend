@@ -1,6 +1,6 @@
 services:
   e-commerce:
-    image: ecommerce:latest
+    image: gokulnathjd03/ecommerce:latest
     container_name: e-commerce-con
     mem_limit: 450m
     environment:
