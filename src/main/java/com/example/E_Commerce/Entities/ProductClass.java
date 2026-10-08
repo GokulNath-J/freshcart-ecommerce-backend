@@ -11,6 +11,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(
+        indexes = {
+                @Index(name = "product_idx", columnList = "productId")
+        }
+)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

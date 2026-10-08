@@ -8,6 +8,11 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(
+        indexes = {
+                @Index(name = "order_idx", columnList = "orderId")
+        }
+)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

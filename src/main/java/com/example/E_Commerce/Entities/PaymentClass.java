@@ -8,6 +8,11 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(
+        indexes = {
+                @Index(name = "payment_idx", columnList = "paymentId")
+        }
+)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

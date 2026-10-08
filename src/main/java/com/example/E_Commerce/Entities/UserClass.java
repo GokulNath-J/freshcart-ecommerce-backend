@@ -10,6 +10,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Entity
+@Table(
+        indexes = {
+                @Index(name = "user_idx", columnList = "userId")
+        }
+)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

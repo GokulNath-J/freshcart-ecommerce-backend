@@ -240,7 +240,7 @@ public class ProductService {
     }
 
     public Page<ProductClass> searchProductByCategoryAndPaging(String category, int page, int size) {
-        Page<ProductClass> productClasses = productRepo.findByCategory(category, PageRequest.of(page, size, Sort.by("category").ascending()));
+        Page<ProductClass> productClasses = productRepo.findByCategory(category, PageRequest.of(page, size, Sort.by("productName").ascending()));
         return productClasses;
     }
 
