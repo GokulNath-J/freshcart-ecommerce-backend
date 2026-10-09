@@ -54,3 +54,32 @@ A Spring Boot backend for a grocery-style marketplace where sellers list product
 - POST	/payment/paymentRequest	(Authenticated) -> Pay and confirm
 - GET	/actuator/health	(Public) ->	Health check
 
+## Run it locally
+
+_ Prerequisites: Docker and Docker Compose, plus JDK 21 and Maven if you want to build the JAR yourself.
+
+## Clone
+
+- git clone https://github.com/GokulNath-J/freshcart-ecommerce-backend.git
+- cd freshcart-ecommerce-backend
+
+## Create a .env file (see .env.example; never commit this file)
+
+- SPRING_DATASOURCE_USERNAME=
+- SPRING_DATASOURCE_PASSWORD=
+- SPRING_DATASOURCE_DATABASE=ecommerce
+- MYSQL_ROOT_PASSWORD=
+- SECRET_KEY=
+
+- Generate a strong JWT secret with openssl rand -base64 32.
+
+## Build and start
+
+- mvn clean package -DskipTests
+- docker build -t ecommerce:0.1 .
+- docker compose -f Docker-Compose.yml up -d
+
+## Check it
+
+- (PostMan) http://localhost:8081/actuator/health
+- The app waits for MySQL's health check before starting, so the first boot takes a short while.
