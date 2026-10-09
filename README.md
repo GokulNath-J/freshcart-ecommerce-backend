@@ -96,3 +96,11 @@ A Spring Boot backend for a grocery-style marketplace where sellers list product
 
 - (Postman) http://instance-public-ip:8081/actuator/health
   
+## Roadmap
+## Honest list of what is not done yet:
+- Input validation with @Valid
+- Unit tests (JUnit, Mockito) and integration tests
+- Refresh tokens
+- Rate limiting (Bucket4j)
+- Async notifications (@Async)
+- Automated EC2 deployment from Jenkins
