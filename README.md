@@ -1,8 +1,8 @@
-FreshCart — E-Commerce Backend
+## FreshCart — E-Commerce Backend
 
 A Spring Boot backend for a grocery-style marketplace where sellers list products, users pay from a wallet, and prices drop automatically as products approach their expiry date.
 
-Features
+## Features
 - JWT authentication with role-based access (USER, SELLER, ADMIN) via @PreAuthorize
 - Wallet system: add money, pay for orders
 - Three-step checkout: view price and discount → create order with the final price → pay
@@ -15,7 +15,7 @@ Features
 - Dockerized with Docker Compose, health checks and memory limits
 - Jenkins CI: a GitHub webhook triggers build and containerization on every push
 
-Tech stack
+## Tech stack
 
 - Java, Spring Boot 4.1
 - Spring Security, JWT (jjwt 0.12)
@@ -26,7 +26,7 @@ Tech stack
 - Jenkins
 - AWS EC2 (free tier)
 
-Design decisions
+## Design decisions
 
 - Why optimistic locking instead of pessimistic? Conflicts on the same product at the same instant are rare, so locking every read would cost more than it saves. @Version adds a version check to the UPDATE, and only the rare collision pays any price.
 
@@ -36,7 +36,7 @@ Design decisions
 
 - Why soft-archive expired products? Past orders still reference them. Moving them to an ExpiredProducts table keeps history intact.
 
-API overview
+## API overview
 
 - POST	/user/createNewuser	(Public) Register a user
 - POST	/user/login	Public	-> Get a JWT
@@ -52,5 +52,5 @@ API overview
 - DELETE	/product/removeProduct	(SELLER) ->	Remove a product
 - POST	/order/orderRequest	(Authenticated) -> Create an order
 - POST	/payment/paymentRequest	(Authenticated) -> Pay and confirm
-GET	/actuator/health	(Public) ->	Health check
+- GET	/actuator/health	(Public) ->	Health check
 
