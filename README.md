@@ -56,7 +56,7 @@ A Spring Boot backend for a grocery-style marketplace where sellers list product
 
 ## Run it locally
 
-_ Prerequisites: Docker and Docker Compose, plus JDK 21 and Maven if you want to build the JAR yourself.
+- Prerequisites: Docker and Docker Compose, plus JDK 21 and Maven if you want to build the JAR yourself.
 
 ## Clone
 
@@ -67,7 +67,7 @@ _ Prerequisites: Docker and Docker Compose, plus JDK 21 and Maven if you want to
 
 - SPRING_DATASOURCE_USERNAME=
 - SPRING_DATASOURCE_PASSWORD=
-- SPRING_DATASOURCE_DATABASE=ecommerce
+- SPRING_DATASOURCE_DATABASE=
 - MYSQL_ROOT_PASSWORD=
 - SECRET_KEY=
 
@@ -83,3 +83,16 @@ _ Prerequisites: Docker and Docker Compose, plus JDK 21 and Maven if you want to
 
 - (PostMan) http://localhost:8081/actuator/health
 - The app waits for MySQL's health check before starting, so the first boot takes a short while.
+
+## Deployment on AWS EC2
+
+- Login into your EC2 instance and run these commands, before this you need to built docker image locally and push into your docker hub and mention the docker hub user/image name
+- git clone https://github.com/GokulNath-J/freshcart-ecommerce-backend.git
+- cd freshcart-ecommerce-backend
+- nano .env                      
+- docker compose -f Docker-Compose.yml up -d
+
+## check it
+
+- (Postman) http://instance-public-ip:8081/actuator/health
+  
