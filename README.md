@@ -3,8 +3,8 @@ FreshCart — E-Commerce Backend
 A Spring Boot backend for a grocery-style marketplace where sellers list products, users pay from a wallet, and prices drop automatically as products approach their expiry date.
 
 Features
-JWT authentication with role-based access (USER, SELLER, ADMIN) via @PreAuthorize
-Wallet system: add money, pay for orders
+- JWT authentication with role-based access (USER, SELLER, ADMIN) via @PreAuthorize
+- Wallet system: add money, pay for orders
 Three-step checkout: view price and discount → create order with the final price → pay
 Automatic expiry discounts and manual seller discounts
 Expired product archiving into a separate table (nothing is hard-deleted)
